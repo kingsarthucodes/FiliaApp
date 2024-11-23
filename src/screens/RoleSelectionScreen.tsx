@@ -1,16 +1,25 @@
 import React from 'react';
 import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-function RoleSelectionScreen(): React.JSX.Element {
+function RoleSelectionScreen({ navigation }): React.JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Neighbor or Student?</Text>
       <Text style={styles.subtitle}>Select an option.</Text>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
+        {/* Navigate to NeighborSignUpScreen */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('NeighborSignUp')}
+        >
           <Text style={styles.buttonText}>Continue as Neighbor</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+
+        {/* Navigate to StudentSignUpScreen */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('StudentSignUp')}
+        >
           <Text style={styles.buttonText}>Continue as Student</Text>
         </TouchableOpacity>
       </View>
