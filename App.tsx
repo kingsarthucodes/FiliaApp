@@ -2,8 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-// Import screens
+
 import RoleSelectionScreen from './src/screens/RoleSelectionScreen';
 import NeighborDetailsScreen from './src/screens/NeighborDetailsScreen';
 import NeighborSignUpScreen from './src/screens/NeighborSignUpScreen';
@@ -24,68 +23,38 @@ const Tab = createBottomTabNavigator();
 function StudentTabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
+      screenOptions={{
         headerShown: false,
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'PostService') {
-            iconName = focused ? 'add-circle' : 'add-circle-outline';
-          } else if (route.name === 'Search') {
-            iconName = focused ? 'search' : 'search-outline';
-          } else if (route.name === 'Notifications') {
-            iconName = focused ? 'notifications' : 'notifications-outline';
-          } else if (route.name === 'Profile') {
-            iconName = focused ? 'person' : 'person-outline';
-          }
-
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
         tabBarActiveTintColor: '#007BFF',
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: { height: 60 },
         tabBarLabelStyle: { fontSize: 12, marginBottom: 5 },
-      })}
+      }}
     >
       <Tab.Screen name="Home" component={StudentHomeScreen} />
       <Tab.Screen name="PostService" component={PostJobScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Notifications" component={NotificationsScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        initialParams={{ studentId: 'defaultStudentId' }} // Pass default or dynamic studentId
+      />
     </Tab.Navigator>
   );
 }
 
-// Neighbor Tab Navigator with icons
+// Neighbor Tab Navigator
 function NeighborTabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
+      screenOptions={{
         headerShown: false,
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'PostJob') {
-            iconName = focused ? 'add-circle' : 'add-circle-outline';
-          } else if (route.name === 'Search') {
-            iconName = focused ? 'search' : 'search-outline';
-          } else if (route.name === 'Notifications') {
-            iconName = focused ? 'notifications' : 'notifications-outline';
-          } else if (route.name === 'Profile') {
-            iconName = focused ? 'person' : 'person-outline';
-          }
-
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
         tabBarActiveTintColor: '#007BFF',
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: { height: 80 },
         tabBarLabelStyle: { fontSize: 12, marginBottom: 1 },
-      })}
+      }}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="PostJob" component={PostJobScreen} />

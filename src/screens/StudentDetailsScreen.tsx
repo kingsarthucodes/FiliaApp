@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Alert,
 } from 'react-native';
 
 const StudentDetailsScreen = ({ navigation }) => {
@@ -16,29 +17,55 @@ const StudentDetailsScreen = ({ navigation }) => {
   const [school, setSchool] = useState('');
   const [travelDistance, setTravelDistance] = useState('');
 
-  const handleContinue = () => {
-    navigation.navigate('StudentHome');
+  const createStudent = async () => {
+    const studentData = {
+      studyField,
+      services,
+      school,
+      travelDistance,
+      idImage: idImage?.uri || null,
+    };
+
+    console.log('Sending Student Data:', studentData); // Log the payload being sent
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/students', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(studentData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Student Created:', result); // Log successful response
+        Alert.alert('Success', 'Student created successfully!');
+        navigation.navigate('StudentHome'); // Navigate to the next screen
+      } else {
+        const error = await response.json();
+        console.error('API Error:', error); // Log error response
+        Alert.alert('Error', error.error || 'Failed to create student.');
+      }
+    } catch (err) {
+      console.error('Network Error:', err); // Log network errors
+      Alert.alert('Error', 'An error occurred while connecting to the server.');
+    }
   };
-  
+
+  const handleContinue = () => {
+    if (!studyField || !services || !school || !travelDistance) {
+      Alert.alert('Validation Error', 'All fields are required.');
+      return;
+    }
+    createStudent(); // Call the API
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Section 1: Tell us about yourself */}
       <Text style={styles.title}>Tell us a little more about yourself!</Text>
 
-      {/* Upload ID Section */}
-      <Text style={styles.subtitle}>Upload an image of your ID below:</Text>
-      <TouchableOpacity style={styles.uploadButton}>
-        <Image
-          source={{ uri: 'https://img.icons8.com/ios/50/000000/upload.png' }}
-          style={styles.uploadIcon}
-        />
-      </TouchableOpacity>
-
-      {/* Study Field Input Section */}
-      <Text style={styles.subtitle}>
-        What are you studying or interested in studying?
-      </Text>
+      <Text style={styles.subtitle}>What are you studying or interested in studying?</Text>
       <TextInput
         style={styles.textArea}
         placeholder="Enter here:"
@@ -47,26 +74,17 @@ const StudentDetailsScreen = ({ navigation }) => {
         onChangeText={setStudyField}
       />
 
-      {/* Service Selection Section */}
       <Text style={styles.subtitle}>What are three services you would like to provide?</Text>
       <TextInput
-        style={styles.searchInput}
-        placeholder="Search here"
+        style={styles.textArea}
+        placeholder="Enter here:"
         value={services}
         onChangeText={setServices}
       />
-      <View style={styles.servicesList}>
-        <Text style={styles.serviceItem}>Dogwalking</Text>
-        <Text style={styles.serviceItem}>Tutoring</Text>
-        <Text style={styles.serviceItem}>Cleaning</Text>
-        <Text style={styles.serviceItem}>Heading</Text>
-        <Text style={styles.serviceItem}>Garden Help</Text>
-      </View>
 
-      {/* Section 2: Additional Fields */}
       <Text style={styles.subtitle}>What school do you currently attend:</Text>
       <TextInput
-        style={styles.input}
+        style={styles.textArea}
         placeholder="Enter your school"
         value={school}
         onChangeText={setSchool}
@@ -74,27 +92,15 @@ const StudentDetailsScreen = ({ navigation }) => {
 
       <Text style={styles.subtitle}>How far would you like to travel for work:</Text>
       <TextInput
-        style={styles.input}
+        style={styles.textArea}
         placeholder="Enter distance (e.g., 5 miles)"
         value={travelDistance}
         onChangeText={setTravelDistance}
       />
 
-      {/* Waiver and Continue Buttons */}
-      <Text style={styles.infoText}>
-        Just a couple steps away from setup. Review and sign the waiver and you're all done!
-      </Text>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Click to sign waiver</Text>
-      </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handleContinue}>
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
-      <Text style={styles.footerText}>
-        By clicking continue, you agree to our{' '}
-        <Text style={styles.linkText}>Terms of Service</Text> and{' '}
-        <Text style={styles.linkText}>Privacy Policy</Text>
-      </Text>
     </ScrollView>
   );
 };
@@ -103,7 +109,6 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     backgroundColor: '#FFFFFF',
-    flexGrow: 1, // Ensures content scrolls properly
   },
   title: {
     fontSize: 24,
@@ -116,74 +121,25 @@ const styles = StyleSheet.create({
     color: '#6B6B6B',
     marginBottom: 10,
   },
-  uploadButton: {
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  uploadIcon: {
-    width: 50,
-    height: 50,
-  },
   textArea: {
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
     padding: 10,
-    height: 80,
-    marginBottom: 20,
-    textAlignVertical: 'top',
-  },
-  searchInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 20,
-  },
-  servicesList: {
-    marginBottom: 20,
-  },
-  serviceItem: {
-    fontSize: 16,
-    color: '#000',
-    marginBottom: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 20,
     height: 50,
-  },
-  infoText: {
-    fontSize: 14,
-    color: '#6B6B6B',
-    textAlign: 'center',
     marginBottom: 20,
   },
   button: {
     backgroundColor: '#000',
     paddingVertical: 12,
-    paddingHorizontal: 24,
     borderRadius: 8,
     alignItems: 'center',
-    marginBottom: 16,
+    marginTop: 20,
   },
   buttonText: {
     color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  footerText: {
-    fontSize: 12,
-    color: '#6B6B6B',
-    textAlign: 'center',
-    marginTop: 10,
-  },
-  linkText: {
-    textDecorationLine: 'underline',
-    color: '#007BFF',
   },
 });
 

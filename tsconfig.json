@@ -1,3 +1,15 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json"
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".", // Base URL for resolving imports
+    "paths": {
+      "@types/*": ["src/types/*"] // Alias for your types folder
+    },
+    "typeRoots": ["./node_modules/@types", "./src/types"], // Include custom types
+    "strict": true, // Enable strict TypeScript checks
+    "esModuleInterop": true, // Allow ES6 module imports
+    "skipLibCheck": true // Skip type checks for libraries
+  },
+  "include": ["src/**/*"], // Include all files in the src folder
+  "exclude": ["node_modules", "build"] // Exclude unnecessary folders
 }
